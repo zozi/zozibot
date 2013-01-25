@@ -32,6 +32,14 @@ callback function that accepts a request and a response.
 
 ### Redis
 
+Install redis
+
+    brew install redis
+    
+Start redis locally:
+
+    redis-server /usr/local/etc/redis.conf
+
 If you are going to use the `redis-brain.coffee` script from `hubot-scripts`
 you will need to add the Redis to Go addon on Heroku which requires a verified
 account or you can create an account at [Redis to Go][redistogo] and manually
