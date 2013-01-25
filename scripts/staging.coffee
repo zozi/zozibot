@@ -17,7 +17,7 @@ module.exports = (robot) ->
     users = robot.brain.data.users
     for own key, user of robot.brain.data.users
       roles = user.roles or []
-      if /has staging/.test roles.join(" ")
+      if /using staging/.test roles.join(" ")
         stagingOwner = user
     if stagingOwner
       msg.send "#{stagingOwner.name} has staging"
