@@ -13,21 +13,20 @@
 # Author:
 #   jmoses
 
-appendAmbush = (data, toUser, fromUser, message) ->
-  if data[toUser.name]
-    data[toUser.name].push message
+appendAmbush = (robot, toUser, fromUser, message) ->
+  ambushes = robot.brain.data.ambushes || {}
+  if ambushes[toUser.name]
+    ambushes[toUser.name].push message
   else
-    data[toUser.name] = [[fromUser.name, message]]
+    ambushes[toUser.name] = [[fromUser.name, message]]
+  robot.brain.data.ambushes = ambushes
 
 module.exports = (robot) ->
-  robot.brain.on 'loaded', =>
-    robot.brain.data.ambushes ||= {}
-
   robot.respond /ambush (.*): (.*)/i, (msg) ->
-    users = robot.usersForFuzzyName(msg.match[1].trim())
+    users = robot.brain.usersForFuzzyName(msg.match[1].trim())
     if users.length is 1
       user = users[0]
-      appendAmbush(robot.brain.data.ambushes, user, msg.message.user, msg.match[2])
+      appendAmbush(robot, user, msg.message.user, msg.match[2])
       msg.send "Ambush prepared"
     else if users.length > 1
       msg.send "Too many users like that"
@@ -35,9 +34,10 @@ module.exports = (robot) ->
       msg.send "#{msg.match[1]}? Never heard of 'em"
   
   robot.hear /./i, (msg) ->
-    if (ambushes = robot.brain.data.ambushes[msg.message.user.name])
+    ambushes = robot.brain.data.ambushes || {}
+    if (user_ambushes = ambushes[msg.message.user.name])
       msg.send "Hey, " + msg.message.user.name + ", while you were out:"
-      for ambush in ambushes
+      for ambush in user_ambushes
         msg.send ambush[0] + " says: " + ambush[1]
       msg.send "That's it. You were greatly missed."
       delete robot.brain.data.ambushes[msg.message.user.name]
