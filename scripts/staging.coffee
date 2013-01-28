@@ -23,3 +23,10 @@ module.exports = (robot) ->
       msg.send "#{stagingOwner.name} has staging"
     else
       msg.send "No one has told me they have staging."
+
+  robot.hear /staging is( all | )clear/i, (msg) ->
+    users = robot.brain.data.users
+    for own key, user of robot.brain.data.users
+      roles = user.roles or []
+      user.roles = (role for role in user.roles when role isnt "using staging")
+    msg.send "All clear!"

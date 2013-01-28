@@ -60,7 +60,7 @@ module.exports = (robot) ->
         else if users.length > 1
           msg.send getAmbiguousUserText users
         else
-          msg.send "I don't know anything about #{name}."
+          msg.send "Right! #{name}..."
 
   robot.respond /@?([\w.-_]+ is|[iI] am) not (["'\w: -_]+)[.!]*$/i, (msg) ->
     mentioned = msg.match[1].trim()
