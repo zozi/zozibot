@@ -16,7 +16,7 @@
 appendAmbush = (robot, toUser, fromUser, message) ->
   ambushes = robot.brain.data.ambushes || {}
   if ambushes[toUser.name]
-    ambushes[toUser.name].push message
+    ambushes[toUser.name].push [fromUser.name, message]
   else
     ambushes[toUser.name] = [[fromUser.name, message]]
   robot.brain.data.ambushes = ambushes
@@ -36,8 +36,6 @@ module.exports = (robot) ->
   robot.hear /./i, (msg) ->
     ambushes = robot.brain.data.ambushes || {}
     if (user_ambushes = ambushes[msg.message.user.name])
-      msg.send "Hey, " + msg.message.user.name + ", while you were out:"
       for ambush in user_ambushes
-        msg.send ambush[0] + " says: " + ambush[1]
-      msg.send "That's it. You were greatly missed."
+        msg.send "@" + msg.message.user.name + " " + ambush[0] + " said: " + ambush[1] + "   (while you were out.)"
       delete robot.brain.data.ambushes[msg.message.user.name]
