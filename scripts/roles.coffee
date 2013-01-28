@@ -34,8 +34,12 @@ module.exports = (robot) ->
       else
         msg.send "#{name}? Never heard of 'em"
 
-  robot.respond /@?([\w .-_]+) is (["'\w: -_]+)[.!]*$/i, (msg) ->
-    name    = msg.match[1].trim()
+  robot.respond /@?([\w.-_]+\sis|[iI]\sam) (["'\w: -_]+)[.!]*$/i, (msg) ->
+    mentioned = msg.match[1].trim()
+    if mentioned.match(/[iI]\sam/)
+      name = msg.message.user.name
+    else
+      name  = mentioned.replace /\sis/, ""
     newRole = msg.match[2].trim()
 
     unless name in ['', 'who', 'what', 'where', 'when', 'why']
@@ -58,8 +62,12 @@ module.exports = (robot) ->
         else
           msg.send "I don't know anything about #{name}."
 
-  robot.respond /@?([\w .-_]+) is not (["'\w: -_]+)[.!]*$/i, (msg) ->
-    name    = msg.match[1].trim()
+  robot.respond /@?([\w.-_]+ is|[iI] am) not (["'\w: -_]+)[.!]*$/i, (msg) ->
+    mentioned = msg.match[1].trim()
+    if mentioned.match(/[iI]\sam/)
+      name = msg.message.user.name
+    else
+      name  = mentioned.replace /\sis/, ""
     newRole = msg.match[2].trim()
 
     unless name in ['', 'who', 'what', 'where', 'when', 'why']
