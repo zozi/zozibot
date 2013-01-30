@@ -14,10 +14,12 @@
 #   ajacksified
 
 module.exports = (robot) ->
-  robot.respond /lod\s?(.*)/i, (msg) ->
-    response = 'ಠ_ಠ'
+  robot.respond /lod(x\d+)?\s?(.*)/i, (msg) ->
+    repeat = msg.match[1] || '1'
+    repeat = parseInt repeat.replace(/x/,''), 10
+    response = Array(repeat + 1).join 'ಠ_ಠ '
 
-    name = msg.match[1].trim()
+    name = msg.match[2].trim()
     response += " @" + name if name != ""
 
     msg.send(response)
