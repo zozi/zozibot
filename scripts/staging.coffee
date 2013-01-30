@@ -1,12 +1,10 @@
-# Assign roles to people you're chatting with
+# Track who has staging
 #
-# <user> is a badass guitarist - assign a role to a user
-# <user> is not a badass guitarist - remove a role from a user
-# who is <user> - see what roles a user has
-
-# hubot holman is an ego surfer
-# hubot holman is not an ego surfer
-#
+# who has staging? - find out who has staging
+# what's up with staging? - find out who has staging
+# staging is (all) clear - clears out the staging user
+# can I (have|use) staging - ask for staging
+# i can haz staging? - ask for staging
 
 module.exports = (robot) ->
 
@@ -42,7 +40,7 @@ module.exports = (robot) ->
     clearStagingOwner(robot.brain.data)
     msg.send "All clear!"
 
-  robot.hear /can [iI] have staging\??/, (msg) ->
+  robot.hear /(?:[iI] can|[cC]an [iI]) (?:have|haz|use) staging\??/, (msg) ->
     EMPTY = {}
     stagingOwner = getStagingOwner(robot.brain.data.users) || EMPTY
     if stagingOwner isnt EMPTY 
