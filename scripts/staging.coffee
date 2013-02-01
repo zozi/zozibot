@@ -1,11 +1,13 @@
-# Track who has staging
+# Track who has a resource
 #
-# @zozibot <user> is using staging - assign staging to someone else
-# who has staging? - find out who has staging
-# what's up with staging? - find out who has staging
-# staging is (all) clear - clears out the staging user
-# can I (have|use) staging - ask for staging
-# i can haz staging? - ask for staging
+# @zozibot <user> is using <resource> - assign <resource> to someone else
+# who has <resource>? - find out who has the resource
+# what's up with <resource>? - find out who has the resource
+# <resource> is (all) clear - clears out the resource user
+# can I (have|use) <resource> - ask for the resource
+# i can haz <resource>? - ask for the resource
+# @zozibot create a resource <resource> - creates a new resource
+# @zozibot destroy the resource <resource> - blow away the resource
 
 module.exports = (robot) ->
 
@@ -82,17 +84,17 @@ module.exports = (robot) ->
     else
       msg.send "I don't have a shiny #{resource} go play with your own."
 
-  robot.respond /(?:give me|create)(?: a)(?: new) resource ([\w.-_]+)$/i, (msg) ->
+  robot.respond /(?:give me|create)(?: a)?(?: new)? resource ([\w.-_]+)$/i, (msg) ->
     resource = msg.match[1]
     if appendResource robot.brain, resource
       msg.send "Oh, wow. That is the most wonderful #{resource} I have ever seen!"
     else
       msg.send "Meh. Seen it before"
 
-  robot.respond /(?:destroy|blow away|get rid of) the resource ([\w.-_]+)$/i, (msg) ->
+  robot.respond /(?:destroy|blow away|get rid of)(?: the)? resource ([\w.-_]+)$/i, (msg) ->
     resource = msg.match[1]
     if removeResource robot.brain, resource
       clearResourceOwner(robot.brain.data, resource)
       msg.send "Muahahahaha (boom) (boom) (awyeah)"
     else
-      msg.send "WAT?"
+      msg.send "WAT? (wat)"
