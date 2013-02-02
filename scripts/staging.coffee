@@ -49,7 +49,7 @@ module.exports = (robot) ->
     else
       false
 
-  robot.hear /(?:who has|what\'s up with) ([\w.-_]+)?/i, (msg) ->
+  robot.hear /(?:who has|what\'s up with) ([\w.-]+)?/i, (msg) ->
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
       resourceOwner = getResourceOwner(robot.brain.data.users, resource)
@@ -60,7 +60,7 @@ module.exports = (robot) ->
     else
       msg.send "/me scratches its virtual robotic head with a virtual robotic finger"
 
-  robot.hear /([\w.-_]+) is( all | )clear/i, (msg) ->
+  robot.hear /([\w.-]+) is( all | )clear/i, (msg) ->
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
       clearResourceOwner(robot.brain.data, resource)
@@ -68,7 +68,7 @@ module.exports = (robot) ->
     else
       msg.send "/me goes looking for a #{resource}"
 
-  robot.hear /(?:[iI] can|[cC]an [iI]) (?:have|haz|use) ([\w.-_^?]+)\??/, (msg) ->
+  robot.hear /(?:[iI] can|[cC]an [iI]) (?:have|haz|use) ([\w.-]+)\??/, (msg) ->
     EMPTY = {}
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
@@ -84,14 +84,14 @@ module.exports = (robot) ->
     else
       msg.send "I don't have a shiny #{resource} go play with your own."
 
-  robot.respond /(?:give me|create)(?: a)?(?: new)? resource ([\w.-_]+)$/i, (msg) ->
+  robot.respond /(?:give me|create)(?: a)?(?: new)? resource ([\w.-]+)$/i, (msg) ->
     resource = msg.match[1]
     if appendResource robot.brain, resource
       msg.send "Oh, wow. That is the most wonderful #{resource} I have ever seen!"
     else
       msg.send "Meh. Seen it before"
 
-  robot.respond /(?:destroy|blow away|get rid of)(?: the)? resource ([\w.-_]+)$/i, (msg) ->
+  robot.respond /(?:destroy|blow away|get rid of)(?: the)? resource ([\w.-]+)$/i, (msg) ->
     resource = msg.match[1]
     if removeResource robot.brain, resource
       clearResourceOwner(robot.brain.data, resource)
