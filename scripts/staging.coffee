@@ -77,17 +77,19 @@ module.exports = (robot) ->
         if msg.message.user.name == stagingOwner.name
           msg.send "You already have it my little pumpkin pie."
         else
-          msg.send "Sorry my sweet little #{stagingOwner.name} has it."
+          friendly_things = ["the lovely", "my sweet little", "my darling", "the fabulous", "the amazing"]
+          msg.send "Sorry #{msg.random friendly_things} #{stagingOwner.name} has it."
       else
         setResourceOwner(robot.brain.data, resource, msg.message.user.name)
         msg.send "You got it Kimosabe"
     else
-      msg.send "I don't have a shiny #{resource} go play with your own."
+      silly_things = ["the barn", "the kumquat", "that wookie", "the star port", "the dinghy", "your marbles", "the prisoner", "llama massage booth", "... I don't know, you silly human.", "the lost boys"]
+      msg.send "I don't have a #{resource}. Maybe you should look out back by #{msg.random silly_things}?"
 
   robot.respond /(?:give me|create)(?: a)?(?: new)? resource ([\w.-]+)$/i, (msg) ->
     resource = msg.match[1]
     if appendResource robot.brain, resource
-      msg.send "Oh, wow. That is the most wonderful #{resource} I have ever seen!"
+      msg.send "Yeehaw! Oh boy this will be the best #{resource} you ever did see."
     else
       msg.send "Meh. Seen it before"
 
