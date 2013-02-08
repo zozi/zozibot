@@ -244,3 +244,6 @@ module.exports = (robot) ->
   robot.hear /good morning/i, (msg) ->
     compliment = msg.random compliments
     msg.send "Good morning #{msg.message.user.name}! It is so nice to see you. #{compliment}"
+
+  robot.hear /good night/i, (msg) ->
+    msg.send "Good night #{msg.message.user.name}! I will miss you."
