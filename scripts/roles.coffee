@@ -88,12 +88,3 @@ module.exports = (robot) ->
       else
         msg.send "I don't know anything about #{name}."
 
-  robot.respond /you are (["'\w: -_]+)/i, (msg) ->
-    user = msg.message.user
-    robotRole = msg.match[1].trim()
-    robotUser = robot.brain.usersForFuzzyName(robot.name)
-    if robotRole in robotUser.roles
-      msg.send "I know."
-    else
-      robotUser.roles.push(robotRole)
-      msg.send "Thank you! Only someone like you could teach me to be #{robotRole}"
