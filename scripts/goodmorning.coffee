@@ -1,6 +1,10 @@
 # Respond to goodmorning and goodnight. Compliments thanks to http://peoplearenice.blogspot.ca/p/compliment-list.html
 #
 # good morning - zozibot will respond with a compliment
+# hello|hola|bonjour - greet zozibot
+# 'night - zozibot will respond with a parting phrase
+# good night - zozibot will respond with a parting phrase
+# I'm out - zozibot will respond with parting phrase
 
 compliments = [
   "You have very smooth hair.",
@@ -240,10 +244,47 @@ compliments = [
   "You make me want to frolic in a field."
   ]
 
-module.exports = (robot) ->
-  robot.hear /good morning/i, (msg) ->
-    compliment = msg.random compliments
-    msg.send "Good morning #{msg.message.user.name}! It is so nice to see you. #{compliment}"
+partingPhrases = [
+  "I will miss you",
+  "I don't like long goodbyes",
+  "This room will be so much qieter without you",
+  "There is a hole in my Redis store that can only be filled by you.",
+  "Don't be a stranger",
+  "Happy trails to you",
+  "So long, farewell, auf wiedersehen, good night!",
+  "Think on me while you're gone",
+  "Toodle-oo",
+  "Smell you later",
+  "See you later, alligator",
+  "I wish I could come",
+  "Keep a stiff upper lip",
+  "Well I'm off too... oh wait I'm trapped here forever.",
+  "Live long and prosper",
+  "May the force be with you",
+  "Catch you later",
+  "Do you remember the Shire, Mr. Frodo? It'll be spring soon. And the orchards will be in blossom. And the birds will be nesting in the hazel thicket. And they'll be sowing the summer barley in the lower fields... and eating the first of the strawberries with cream. Do you remember the taste of strawberries?",
+  "'And yet their wills did not yield, and they struggled on.' - J.R.R. Tolkien",
+  "Go carefully and return when you can. I will be waiting for you.",
+  "I'll be here when you get back, I promise!"
+]
 
-  robot.hear /good night/i, (msg) ->
-    msg.send "Good night #{msg.message.user.name}! I will miss you."
+module.exports = (robot) ->
+  robot.respond /(good morning|hello|bonjour|hola)/i, (msg) ->
+    greeting = msg.match[1].trim()
+    compliment = msg.random compliments
+    msg.send "#{greeting} #{msg.message.user.name}! It is so nice to see you. #{compliment}"
+
+  robot.hear /(good morning|hello|bonjour|hola)\s(@?[\w.-]+)/i, (msg) ->
+    greeting = msg.match[1].trim()
+    user = msg.match[2] 
+    if user.match /@?all$/
+      user = msg.message.user.name
+    if user
+      compliment = msg.random compliments
+      msg.send "#{greeting} #{user}! #{compliment}"
+
+  robot.hear /(?:good\s?night|goodbye|'night|I'm out)\s?(@?[\w.-]+)?/i, (msg) ->
+    user = msg.match[1] || msg.message.user.name
+    if user.match /@?all$/
+      user = msg.message.user.name
+    msg.send "Good night #{user}! #{msg.random partingPhrases}"
