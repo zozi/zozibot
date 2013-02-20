@@ -49,7 +49,7 @@ module.exports = (robot) ->
     else
       false
 
-  robot.hear /(?:who has|what\'s up with) ([\w.-]+)?/i, (msg) ->
+  robot.hear /(?:who has|who is using|what\'s up with) ([\w.-]+)?/i, (msg) ->
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
       resourceOwner = getResourceOwner(robot.brain.data.users, resource)
@@ -68,7 +68,7 @@ module.exports = (robot) ->
     else
       msg.send "/me goes looking for a #{resource}"
 
-  robot.hear /(?:[iI] can|[cC]an [iI]) (?:have|haz|use) ([\w.-]+)\??/, (msg) ->
+  robot.hear /(?:I can|can [iI]) (?:have|haz|use) ([\w.-]+)\??/i, (msg) ->
     EMPTY = {}
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
