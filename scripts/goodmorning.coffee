@@ -276,12 +276,15 @@ module.exports = (robot) ->
 
   robot.hear /(good morning|hello|bonjour|hola)\s(@?[\w.-]+)/i, (msg) ->
     greeting = msg.match[1].trim()
-    user = msg.match[2] 
-    if user.match /@?all$/
-      user = msg.message.user.name
-    if user
+    username = msg.match[2].trim()
+    user = robot.brain.usersForFuzzyName(username)
+    msg.send user.name + username + " #{robot.name}"
+    if username.match /@?all$/ or username.match ///#{robot.name}///i
+      msg.send "ho"
+      user = msg.message.user
+    if user.length is 1
       compliment = msg.random compliments
-      msg.send "#{greeting} #{user}! #{compliment}"
+      msg.send "#{greeting} #{user.name}! #{compliment}"
 
   robot.hear /(?:good\s?night|goodbye|'night|I'm out)\s?(@?[\w.-]+)?/i, (msg) ->
     user = msg.match[1] || msg.message.user.name

@@ -18,10 +18,22 @@ module.exports = (robot) ->
         resourceOwner = user
     resourceOwner
 
+  getResourceBackup = (users, resource) ->
+    for own key, user of users
+      roles = user.roles or []
+      if ///has\sdibs\son\s#{resource}///.test roles.join(" ") 
+        resourceBackup = user
+    resourceBackup
+
   clearResourceOwner = (data, resource) ->
     for own key, user of data.users
       roles = user.roles or [ ]
       user.roles = (role for role in roles when role isnt "using #{resource}")
+
+  clearResourceBackup = (data, resource) ->
+    for own key, user of data.users
+      roles = user.roles or [ ]
+      user.roles = (role for role in roles when role isnt "has dibs on #{resource}")
 
   setResourceOwner = (data, resource, name) ->
     users = robot.brain.usersForFuzzyName(name)
@@ -30,6 +42,14 @@ module.exports = (robot) ->
       user.roles = user.roles or [ ]
       if "using #{resource}" not in user.roles
         user.roles.push("using #{resource}")
+
+  setResourceBackup = (data, resource, name) ->
+    users = robot.brain.usersForFuzzyName(name)
+    if users.length is 1
+      user = users[0]
+      user.roles = user.roles or [ ]
+      if "has dibs on #{resource}" not in user.roles
+        user.roles.push("has dibs on #{resource}")
 
   appendResource = (brain, resource) ->
     resources = brain.data.resources || {}
@@ -57,18 +77,28 @@ module.exports = (robot) ->
         msg.send "#{resourceOwner.name} has #{resource}"
       else
         msg.send "No one has told me they have #{resource}."
+      resourceBackup = getResourceBackup(robot.brain.data.users, resource)
+      if resourceBackup
+        msg.send "#{resourceBackup.name} has dibs on #{resource}"
     else
       msg.send "/me scratches its virtual robotic head with a virtual robotic finger"
 
   robot.hear /([\w.-]+) is( all | )clear/i, (msg) ->
+    EMPTY = {}
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
       clearResourceOwner(robot.brain.data, resource)
-      msg.send "#{resource} is all clear sugar."
+      resourceBackup = getResourceBackup(robot.brain.data.users, resource) || EMPTY
+      if resourceBackup isnt EMPTY
+        clearResourceBackup(robot.brain.data, resource)
+        setResourceOwner(robot.brain.data, resource, resourceBackup.name)
+        msg.send "ok @#{resourceBackup.name} now has #{resource}"
+      else
+        msg.send "okay #{resource} is clear."
     else
       msg.send "/me goes looking for a #{resource}"
 
-  robot.hear /(?:I can|can [iI]) (?:have|haz|use) ([\w.-]+)\??/i, (msg) ->
+  robot.hear /(?:I can|can [iI]|gimme) (?:have|haz|use|some) ([\w.-]+)\??/i, (msg) ->
     EMPTY = {}
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
@@ -79,12 +109,39 @@ module.exports = (robot) ->
         else
           friendly_things = ["the lovely", "my sweet little", "my darling", "the fabulous", "the amazing"]
           msg.send "Sorry #{msg.random friendly_things} #{stagingOwner.name} has it."
+          resourceBackup = getResourceBackup(robot.brain.data.users, resource) || EMPTY
+          if resourceBackup isnt EMPTY
+            msg.send "And #{resourceBackup.name} has dibs." 
+          else
+          msg.send "But you can have dibs if you want it."
       else
         setResourceOwner(robot.brain.data, resource, msg.message.user.name)
         msg.send "You got it Kimosabe"
     else
-      silly_things = ["the barn", "the kumquat", "that wookie", "the star port", "the dinghy", "your marbles", "the prisoner", "llama massage booth", "... I don't know, you silly human.", "the lost boys"]
+      silly_things = ["the barn", "the kumquat", "that wookie", "the star port", "the dinghy", "your marbles", "the prisoner", "the llama massage booth", "the... I don't know, you silly human.", "the lost boys"]
       msg.send "I don't have a #{resource}. Maybe you should look out back by #{msg.random silly_things}?"
+
+  robot.hear /(?:I call dibs|dibs|shotgun) on ([\w.-]+)\??/i, (msg) ->
+    EMPTY = {}
+    resource = msg.match[1].trim()
+    if robot.brain.data.resources[resource]
+      resourceOwner = getResourceOwner(robot.brain.data.users, resource) || EMPTY
+      if resourceOwner isnt EMPTY
+        resourceBackup = getResourceBackup(robot.brain.data.users, resource) || EMPTY
+        if resourceBackup isnt EMPTY 
+          if msg.message.user.name == resourceBackup.name
+            msg.send "Well shewt, ya don't have ta keep tellin me!"
+          else
+            friendly_things = ["The beefy", "The mighty", "The patient", "The gracious", "The delightful", "One fantastic"]
+            msg.send "Denied. #{msg.random friendly_things} #{stagingOwner.name} has dibs."
+        else
+          setResourceBackup(robot.brain.data, resource, msg.message.user.name)
+          msg.send "You are now on deck"
+      else
+        msg.send "Why are you calling dibs? You can have it silly."
+    else
+      silly_things = ["tabanus nippontucki", 'heerz tooya', 'heerz lukenatcha', 'verae peculya', 'greasy spoon', 'troglodyte', 'furry faced hobbit', 'smiley faced fool', 'faulty flatulent feline friend', 'sweet little buttercup', 'bag of mostly watter']
+      msg.send "You can't call dibs on #{resource} you silly little #{msg.random silly_things}"
 
   robot.respond /(?:give me|create)(?: a)?(?: new)? resource ([\w.-]+)$/i, (msg) ->
     resource = msg.match[1]
