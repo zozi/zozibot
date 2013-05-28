@@ -92,7 +92,7 @@ module.exports = (robot) ->
       if resourceBackup isnt EMPTY
         clearResourceBackup(robot.brain.data, resource)
         setResourceOwner(robot.brain.data, resource, resourceBackup.name)
-        msg.send "ok @#{resourceBackup.name} now has #{resource}"
+        msg.send "ok @#{resourceBackup.mention_name} now has #{resource}"
       else
         msg.send "okay #{resource} is clear."
     else
