@@ -133,7 +133,7 @@ module.exports = (robot) ->
             msg.send "Well shewt, ya don't have ta keep tellin me!"
           else
             friendly_things = ["The beefy", "The mighty", "The patient", "The gracious", "The delightful", "One fantastic"]
-            msg.send "Denied. #{msg.random friendly_things} #{stagingOwner.name} has dibs."
+            msg.send "Denied. #{msg.random friendly_things} #{resourceBackup.name} has dibs."
         else
           setResourceBackup(robot.brain.data, resource, msg.message.user.name)
           msg.send "You are now on deck"
