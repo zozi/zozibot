@@ -46,7 +46,7 @@ compliments = [
   "You're tremendous!",
   "You deserve a compliment!",
   "Hello, good looking.",
-  "Your smile is breath taking.",
+  "Your smile is breathtaking.",
   "How do you get your hair to look that great?",
   "You are quite strapping.",
   "I am grateful to be blessed by your presence.",
@@ -268,24 +268,33 @@ partingPhrases = [
   "I'll be here when you get back, I promise!"
 ]
 
+Util = require "util"
+
 module.exports = (robot) ->
   robot.respond /(good morning|hello|bonjour|hola)/i, (msg) ->
     greeting = msg.match[1].trim()
     compliment = msg.random compliments
     msg.send "#{greeting} #{msg.message.user.name}! It is so nice to see you. #{compliment}"
 
-  robot.hear /(good morning|hello|bonjour|hola)\s(@?[\w.-]+)/i, (msg) ->
+  robot.hear /(good morning|hello|bonjour|hola)\s@?([\w.-]+)/i, (msg) ->
     greeting = msg.match[1].trim()
     username = msg.match[2].trim()
-    user = robot.brain.usersForFuzzyName(username)[0]
-    if username.match /@?all$/ or username.match ///#{robot.name}///i
-      user = msg.message.user
-    if user.length is 1
-      compliment = msg.random compliments
-      msg.send "#{greeting} @#{user.mention_name}! #{compliment}"
+    users = robot.brain.usersForFuzzyName(username)
+    if users.length == 1
+      if username.match /@?all$/ 
+        user = robot.brain.usersForFuzzyName(msg.message.user.name)[0]
+      else if username.match ///#{robot.name}///i
+        msg.send "Ah! you are talking to me!!!"
+        user = robot.brain.usersForFuzzyName(msg.message.user.name)[0]
+      else
+        user = users[0]
+    else if users.length == 0
+      msg.send "(wat) no one by that name here."
+    compliment = msg.random compliments
+    msg.send "#{greeting} @#{user.mention_name}! #{compliment}"
 
-  robot.hear /(?:good\s?night|goodbye|'night|I'm out)\s?(@?[\w.-]+)?/i, (msg) ->
+  robot.hear /(?:good\s?night|goodbye|'night|I'm out|chau|ciao|hasta la vista|adios)\s?(@?[\w.-]+)?/i, (msg) ->
     user = msg.match[1] || msg.message.user.name
-    if user.match /@?all$/
+    if user.match /@?all$/ or username.match ///#{robot.name}///i
       user = msg.message.user.name
     msg.send "Good night #{user}! #{msg.random partingPhrases}"
