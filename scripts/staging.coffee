@@ -74,7 +74,7 @@ module.exports = (robot) ->
     if robot.brain.data.resources[resource]
       resourceOwner = getResourceOwner(robot.brain.data.users, resource)
       if resourceOwner
-        msg.send "#{resourceOwner.name} has #{resource}"
+        msg.send "#{resourceOwner.name} (@#{resourceOwner.mention_name}) has #{resource}"
       else
         msg.send "No one has told me they have #{resource}."
       resourceBackup = getResourceBackup(robot.brain.data.users, resource)
