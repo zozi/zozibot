@@ -108,7 +108,7 @@ module.exports = (robot) ->
           msg.send "You already have it my little pumpkin pie."
         else
           friendly_things = ["the lovely", "my sweet little", "my darling", "the fabulous", "the amazing"]
-          msg.send "Sorry #{msg.random friendly_things} #{stagingOwner.name} has it."
+          msg.send "Sorry #{msg.random friendly_things} #{stagingOwner.name} has #{resource}. (@#{stagingOwner.mention_name})"
           resourceBackup = getResourceBackup(robot.brain.data.users, resource) || EMPTY
           if resourceBackup isnt EMPTY
             msg.send "And #{resourceBackup.name} has dibs." 
