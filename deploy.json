@@ -1,7 +1,7 @@
 {
   "server": "ocean-zb1",
   "server_dir": "/home/zozi",
-  "repo": "git@github.com:zozi/zozibot.git",
+  "repo": "git://github.com/zozi/zozibot.git",
   "prj_git_relative_dir": "",
   "branch": "deploy-script",
   "force_regenerate_git_dir": false,
