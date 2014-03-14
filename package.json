@@ -18,6 +18,11 @@
     "url" : "http://github.com/github/hubot.git"
   },
 
+  "scripts" : {
+    "start" : "./bin/hubot -a hipchat -n Zozibot"
+
+  },
+
   "dependencies": {
     "ntwitter" : "https://github.com/sebhildebrandt/ntwitter/tarball/master",
     "hubot-hipchat": ">= 1.0.9",
