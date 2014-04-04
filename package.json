@@ -27,7 +27,7 @@
     "hubot-hipchat": ">= 1.0.9",
     "hubot": ">= 2.4.0",
     "hubot-scripts": ">= 2.0.8",
-    "optparse": "1.0.3",
+    "optparse": "*",
     "xml2js": "0.1.14"
   }
 }
