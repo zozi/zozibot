@@ -19,8 +19,7 @@
   },
 
   "scripts" : {
-    "start" : "./bin/hubot -a hipchat -n Zozibot"
-
+    "start" : "zozibot"
   },
 
   "dependencies": {
