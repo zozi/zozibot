@@ -3,7 +3,7 @@
   "server_dir": "/home/zozi",
   "repo": "git://github.com/zozi/zozibot.git",
   "prj_git_relative_dir": "",
-  "branch": "deploy-script",
+  "branch": "master",
   "force_regenerate_git_dir": false,
   "shared_dirs": [
     "node_modules",
