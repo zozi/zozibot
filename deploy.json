@@ -15,5 +15,5 @@
     "npm install",
     "npm test"
   ],
-  "run_cmd": "npm start"
+  "run_cmd": "~/hubot&"
 }
