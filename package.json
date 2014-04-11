@@ -26,7 +26,7 @@
     "ntwitter" : "https://github.com/sebhildebrandt/ntwitter/tarball/master",
     "hubot-hipchat": ">= 1.0.9",
     "hubot": ">= 2.4.0",
-    "hubot-scripts": ">= 2.0.8",
+    "hubot-scripts": ">= 2.5.11",
     "optparse": ">= 1.0.3",
     "xml2js": ">= 0.1.14"
   }
