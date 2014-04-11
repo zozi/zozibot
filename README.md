@@ -1,19 +1,19 @@
-# Hubot
+# Rickbot
 
-This is a version of GitHub's Campfire bot, hubot. He's pretty cool.
+This is a version of GitHub's Campfire bot, rickbot. He's pretty cool.
 
 This version is designed to be deployed on Rackspace using Chef
 
-## Playing with Hubot
+## Playing with Rickbot
 
-You'll need to install the necessary dependencies for hubot. All of
+You'll need to install the necessary dependencies for rickbot. All of
 those dependencies are provided by [npm][npmjs].
 
 [npmjs]: http://npmjs.org
 
 ## HTTP Listener
 
-Hubot has a HTTP listener which listens on the port specified by the `PORT`
+Rickbot has a HTTP listener which listens on the port specified by the `PORT`
 environment variable.
 
 You can specify routes to listen on in your scripts by using the `router`
@@ -33,7 +33,7 @@ callback function that accepts a request and a response.
 Install redis
 
     brew install redis
-    
+
 Start redis locally:
 
     redis-server /usr/local/etc/redis.conf
@@ -42,11 +42,11 @@ If you don't require any persistence feel free to remove the
 `redis-brain.coffee` from `hubot-scripts.json` and you don't need to worry
 about redis at all.
 
-### Testing Hubot Locally
+### Testing Rickbot Locally
 
-You can test your hubot by running the following.
+You can test your rickbot by running the following.
 
-    % bin/hubot
+    % bin/rickbot
 
 You'll see some start up output about where your scripts come from and a
 prompt.
@@ -71,7 +71,7 @@ want hubot to have.
 
 ## Adapters
 
-Adapters are the interface to the service you want your hubot to run on. This
+Adapters are the interface to the service you want your rickbot to run on. This
 can be something like Campfire or IRC. There are a number of third party
 adapters that the community have contributed. Check the
 [hubot wiki][hubot-wiki] for the available ones.
@@ -81,18 +81,18 @@ the adapter package as a dependency to the `package.json` file in the
 `dependencies` section.
 
 Once you've added the dependency and run `npm install` to install it you can
-then run hubot with the adapter.
+then run rickbot with the adapter.
 
-    % bin/hubot -a <adapter>
+    % bin/rickbot -a <adapter>
 
-Where `<adapter>` is the name of your adapter without the `hubot-` prefix.
+Where `<adapter>` is the name of your adapter without the `rickbot-` prefix.
 
 [hubot-wiki]: https://github.com/github/hubot/wiki
 
 ## hubot-scripts
 
 There will inevitably be functionality that everyone will want. Instead
-of adding it to hubot itself, you can submit pull requests to
+of adding it to rickbot itself, you can submit pull requests to
 [hubot-scripts][hubot-scripts].
 
 To enable scripts from the hubot-scripts package, add the script name with
@@ -103,11 +103,11 @@ repo.
 
 ## Deployment
 
-Zozibot is deployed using the Mina deployer
+Rickbot is deployed using the Mina deployer
 
     % mina deploy
 
-More info on deploying hubot in a windows environement can be found at
+More info on deploying rickbot in a windows environement can be found at
  [deploying hubot onto UNIX][deploy-unix] wiki page.
 
 [heroku-node-docs]: http://devcenter.heroku.com/articles/node-js
