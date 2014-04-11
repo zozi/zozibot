@@ -19,7 +19,7 @@
   },
 
   "scripts" : {
-    "start" : "zozibot"
+    "start" : "hubot"
   },
 
   "dependencies": {
