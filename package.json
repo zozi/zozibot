@@ -19,7 +19,7 @@
   },
 
   "scripts" : {
-    "start" : "~/hubot"
+    "start" : "hubot"
   },
 
   "dependencies": {
