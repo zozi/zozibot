@@ -36,12 +36,14 @@ module.exports = (robot) ->
           catch e
             return msg.send "Error parsing pivotal story body: #{e}"
 
-          message = "#{story.name}\n\n"
-          # message += "State: #{story.current_state}\n" if story.current_state && story.current_state != "unstarted"
-          message += "Story: #{story.url}\n"
+
+          story_state = story.current_state
+          story_estimate = ""
+          story_estimate = "#{story.estimate} - " if story.estimate
+
+          message = "#{story_estimate}<a href='#{story.url}'>#{story.name}</a> - <strong>#{story_state}</strong>"
 
           url = "https://www.pivotaltracker.com/services/v5/projects/#{story.project_id}/stories/#{story_id}/comments"
-
           msg.http(url).headers("X-TrackerToken": token).get() (err, res, body) ->
             return msg.send "Pivotal says: #{err}" if err
             try
@@ -52,7 +54,7 @@ module.exports = (robot) ->
             for comment in comments
               match = comment.text.match /(https?:\/\/)?github.com\/\w+\/\w+\/pull\/\S+/
               if match
-                message += "Codes: #{match[0]}\n"
+                message += " - <a href='#{match[0]}'>PR</a>"
 
             msg.send message
 
