@@ -7,13 +7,16 @@
   "force_regenerate_git_dir": false,
   "shared_dirs": [
     "node_modules",
-    "db"
+    "db",
+    "pids"
   ],
   "prerun": [
     "npm cache clear",
     "npm cache clean",
     "npm install",
-    "npm test"
+    "npm test",
+    "ln -nfs ~/shared/bin/.hubotrc bin/.hubotrc",
+    "ln -nfs ~/shared/bin/daemon.sh bin/daemon.sh"
   ],
-  "run_cmd": "~/hubot&"
+  "run_cmd": "bin/daemon.sh restart"
 }
