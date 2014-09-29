@@ -41,7 +41,10 @@ module.exports = (robot) ->
           story_estimate = ""
           story_estimate = "#{story.estimate} - " if story.estimate
 
-          message = "#{story_estimate}<a href='#{story.url}'>#{story.name}</a> - <strong>#{story_state}</strong>"
+          message = "#{story_estimate}#{story.name} - #{story_state}\n"
+          message += "Story: #{story.url}\n"
+
+
 
           url = "https://www.pivotaltracker.com/services/v5/projects/#{story.project_id}/stories/#{story_id}/comments"
           msg.http(url).headers("X-TrackerToken": token).get() (err, res, body) ->
@@ -54,7 +57,7 @@ module.exports = (robot) ->
             for comment in comments
               match = comment.text.match /(https?:\/\/)?github.com\/\w+\/\w+\/pull\/\S+/
               if match
-                message += " - <a href='#{match[0]}'>PR</a>"
+                message += "Pr: #{match[0]}"
 
             msg.send message
 
