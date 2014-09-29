@@ -107,6 +107,11 @@ Zozibot is deployed using the Mina deployer
 
     % mina deploy
 
+Sometimes Ricbot gets sad and leaves the room. To get it to come back you can run a shell script on is server:
+
+1. `ssh ocean-zb1`
+2. `./start_hubot.sh`
+
 More info on deploying hubot in a windows environement can be found at
  [deploying hubot onto UNIX][deploy-unix] wiki page.
 
