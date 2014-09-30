@@ -37,9 +37,13 @@ module.exports = (robot) ->
             return msg.send "Error parsing pivotal story body: #{e}"
 
 
+          console.log story
           story_state = story.current_state
           story_estimate = ""
-          story_estimate = "#{story.estimate} - " if story.estimate
+          if story.story_type == 'feature'
+            story_estimate = "#{story.estimate} - " if story.estimate
+          else
+            story_estimate = "#{story.story_type} - "
 
           message = "#{story_estimate}#{story.name} - #{story_state}\n"
           message += "Story: #{story.url}\n"
