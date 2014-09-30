@@ -33,7 +33,7 @@ callback function that accepts a request and a response.
 Install redis
 
     brew install redis
-    
+
 Start redis locally:
 
     redis-server /usr/local/etc/redis.conf
@@ -110,7 +110,8 @@ Zozibot is deployed using the Mina deployer
 Sometimes Ricbot gets sad and leaves the room. To get it to come back you can run a shell script on is server:
 
 1. `ssh ocean-zb1`
-2. `./start_hubot.sh`
+2. `cd ~/current`
+3. `bin/daemon.sh start`
 
 More info on deploying hubot in a windows environement can be found at
  [deploying hubot onto UNIX][deploy-unix] wiki page.
