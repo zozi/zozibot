@@ -4,7 +4,7 @@
   "repo": "git://github.com/zozi/zozibot.git",
   "prj_git_relative_dir": "",
   "branch": "master",
-  "force_regenerate_git_dir": false,
+  "force_regenerate_git_dir": true,
   "shared_dirs": [
     "node_modules",
     "db",
