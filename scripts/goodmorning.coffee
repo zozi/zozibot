@@ -247,7 +247,7 @@ compliments = [
 partingPhrases = [
   "I will miss you",
   "I don't like long goodbyes",
-  "This room will be so much qieter without you",
+  "This room will be so much quieter without you",
   "There is a hole in my Redis store that can only be filled by you.",
   "Don't be a stranger",
   "Happy trails to you",
