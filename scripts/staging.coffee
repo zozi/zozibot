@@ -93,7 +93,7 @@ module.exports = (robot) ->
     else
       msg.send "/me scratches its virtual robotic head with a virtual robotic finger"
 
-  robot.hear /([\w.-]+) is( all | )clear/i, (msg) ->
+  robot.hear /([\w.-]+) is( all | )(free|clear)/i, (msg) ->
     EMPTY = {}
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
