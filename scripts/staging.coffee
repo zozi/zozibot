@@ -69,6 +69,16 @@ module.exports = (robot) ->
     else
       false
 
+  robot.respond /list resources/i, (msg) ->
+    resourceStatuses = []
+    for own resource, active of robot.brain.data.resources
+      owner = getResourceOwner(robot.brain.data.users, resource)
+      if owner
+        resourceStatuses.push "#{owner.name} has #{resource}"
+      else
+        resourceStatuses.push "#{resource} is free"
+    msg.send resourceStatuses.join(", ")
+
   robot.hear /(?:who has|who is using|what\'s up with) ([\w.-]+)?/i, (msg) ->
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
