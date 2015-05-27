@@ -17,8 +17,3 @@ module.exports = (robot) ->
     robot.hear /\@adam/i, (msg) ->
         user = robot.brain.usersForFuzzyName(msg.message.user.name)[0]
         msg.send "@#{user.mention_name} YA DUN GOOFED! Did ya mean coopski or brillmuffin?"
-
-    robot.hear /\@evan/i, (msg) ->
-        user = robot.brain.usersForFuzzyName(msg.message.user.name)[0]
-        msg.send "@#{user.mention_name} YA DUN GOOFED! Did ya mean Evan 'Code Master' Hourigan or Evan 'As you wish' Hamilton?"
-
