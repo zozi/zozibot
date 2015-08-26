@@ -8,7 +8,7 @@
 #   None
 #
 # Commands:
-#   hubot listens for @adam or @evan names and responds.
+#   hubot listens for @adam names and responds.
 #
 # Author:
 #   radixhound
