@@ -153,6 +153,35 @@ module.exports = (robot) ->
       silly_things = ["tabanus nippontucki", 'heerz tooya', 'heerz lukenatcha', 'verae peculya', 'greasy spoon', 'troglodyte', 'furry faced hobbit', 'smiley faced fool', 'faulty flatulent feline friend', 'sweet little buttercup', 'bag of mostly watter']
       msg.send "You can't call dibs on #{resource} you silly little #{msg.random silly_things}"
 
+  robot.hear /(?:Remove|Delete) me from queue on ([\w.-]+)\??/i, (msg) ->
+    EMPTY = {}
+    resource = msg.match[1].trim()
+    if robot.brain.data.resources[resource]
+      resourceBackup = getResourceBackup(robot.brain.data.users, resource) || EMPTY
+      if resourceBackup isnt EMPTY
+        if msg.message.user.name is resourceBackup.name
+          clearResourceBackup(robot.brain.data, resource)
+          msg.send "You are no longer in queue for #{resource}."
+        else
+          msg.send "#{resourceBackup.name} is already in queue for #{resource}."
+      else
+        msg.send "Silly Human, no one is in queue on #{resource}." 
+    else 
+      msg.send "#{resource}? We don't have no stinking #{resource}."
+
+  robot.hear /Clear the queue on ([\w.-]+)\??/i, (msg) ->
+    EMPTY = {}
+    resource = msg.match[1].trim()
+    if robot.brain.data.resources[resource]
+      resourceBackup = getResourceBackup(robot.brain.data.users, resource) || EMPTY
+      if resourceBackup isnt EMPTY
+        clearResourceBackup(robot.brain.data, resource)
+        msg.send "The queue is clear for #{resource}."
+      else
+        msg.send "Silly Human, no one is in queue on #{resource}." 
+    else 
+      msg.send "#{resource}? We don't have no stinking #{resource}."
+
   robot.respond /(?:give me|create)(?: a)?(?: new)? resource ([\w.-]+)$/i, (msg) ->
     resource = msg.match[1]
     if appendResource robot.brain, resource
