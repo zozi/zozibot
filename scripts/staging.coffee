@@ -3,9 +3,10 @@
 # @zozibot <user> is using <resource> - assign <resource> to someone else
 # who has <resource>? - find out who has the resource
 # what's up with <resource>? - find out who has the resource
-# <resource> is (all) clear - clears out the resource user
-# can I (have|use) <resource> - ask for the resource
-# i can haz <resource>? - ask for the resource
+# @zozibot <resource> is (all) clear - clears out the resource user
+# @zozibot can I (have|use) <resource> - ask for the resource
+# @zozibot i can haz <resource>? - ask for the resource
+# Remove/Delete me from queue on <resource> - un-dibs yourself
 # @zozibot create a resource <resource> - creates a new resource
 # @zozibot destroy the resource <resource> - blow away the resource
 
@@ -165,8 +166,8 @@ module.exports = (robot) ->
         else
           msg.send "#{resourceBackup.name} is already in queue for #{resource}."
       else
-        msg.send "Silly Human, no one is in queue on #{resource}." 
-    else 
+        msg.send "Silly Human, no one is in queue on #{resource}."
+    else
       msg.send "#{resource}? We don't have no stinking #{resource}."
 
   robot.hear /Clear the queue on ([\w.-]+)\??/i, (msg) ->
@@ -178,8 +179,8 @@ module.exports = (robot) ->
         clearResourceBackup(robot.brain.data, resource)
         msg.send "The queue is clear for #{resource}."
       else
-        msg.send "Silly Human, no one is in queue on #{resource}." 
-    else 
+        msg.send "Silly Human, no one is in queue on #{resource}."
+    else
       msg.send "#{resource}? We don't have no stinking #{resource}."
 
   robot.respond /(?:give me|create)(?: a)?(?: new)? resource ([\w.-]+)$/i, (msg) ->
