@@ -1,15 +1,17 @@
 # Track who has a resource
 #
-# @zozibot <user> is using <resource> - assign <resource> to someone else
+# @bot <user> is using <resource> - assign <resource> to someone else
 # who has <resource>? - find out who has the resource
 # what's up with <resource>? - find out who has the resource
-# @zozibot <resource> is (all) clear - clears out the resource user
-# @zozibot can I (have|use) <resource> - ask for the resource
-# @zozibot i can haz <resource>? - ask for the resource
+# @bot <resource> is (all) clear - clears out the resource user
+# @bot can I (have|use) <resource> - ask for the resource
+# @bot i can haz <resource>? - ask for the resource
 # Remove/Delete me from queue on <resource> - un-dibs yourself
-# @zozibot create a resource <resource> - creates a new resource
-# @zozibot destroy the resource <resource> - blow away the resource
-
+# @bot create a resource <resource> - creates a new resource
+# @bot destroy the resource <resource> - blow away the resource
+# @bot watch for <repo> deploys to|on <resource> - remember branches of <rep> deployed to <resource>
+# @bot ignore <repo> deploys to|on <resource> - stop remembering branches of <rep> deployed to <resource>
+# what (branch is|branches are) on <resource> - ask for a list of deployed branches
 module.exports = (robot) ->
 
   getResourceOwner = (users, resource) ->
@@ -57,7 +59,7 @@ module.exports = (robot) ->
     if resources[resource]
       false
     else
-      resources[resource] = true
+      resources[resource] = {}
       brain.data.resources = resources
       true
 
@@ -70,16 +72,53 @@ module.exports = (robot) ->
     else
       false
 
-  robot.respond /list resources/i, (msg) ->
-    resourceStatuses = []
-    for own resource, active of robot.brain.data.resources
-      owner = getResourceOwner(robot.brain.data.users, resource)
-      if owner
-        resourceStatuses.push "#{owner.name} has #{resource}"
-      else
-        resourceStatuses.push "#{resource} is free"
-    msg.send resourceStatuses.join(", ")
+  associateRepo = (brain, resource, repo) ->
+    resources = brain.data.resources || {}
+    relevantResource = resources[resource]
+    if relevantResource
+      branches = relevantResource.branches || []
+      relevantBranch = false
+      for branch in branches
+        relevantBranch = branch if branch.repo is repo
+      if !relevantBranch
+        branches.push { repo: repo }
+      relevantResource.branches = branches
+      true
+    else
+      false
 
+  dissociateRepo = (brain, resource, repo) ->
+    resources = brain.data.resources || {}
+    relevantResource = resources[resource]
+    if relevantResource
+      branches = relevantResource.branches || []
+      branches = branches.filter (branch) -> (branch.repo isnt repo)
+      relevantResource.branches = branches
+      true
+    else
+      false
+
+  getResourceBranches = (brain, resource) ->
+    resources = brain.data.resources || {}
+    relevantResource = resources[resource]
+    if relevantResource
+      relevantResource.branches
+    else
+      false
+
+  findResourceRepoBranch = (brain, resource, repo) ->
+    branches = getResourceBranches brain, resource
+    if branches
+      targetBranch = false
+      for branch in branches
+        targetBranch = branch if branch.repo is repo
+      targetBranch
+    else
+      false
+
+  ####################### RESOURCE CLAIMING ############################
+
+  # inquire who is using a resource
   robot.hear /(?:who has|who is using|what\'s up with) ([\w.-]+)?/i, (msg) ->
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
@@ -94,6 +133,7 @@ module.exports = (robot) ->
     else
       msg.send "/me scratches its virtual robotic head with a virtual robotic finger"
 
+  # free a resource
   robot.respond /([\w.-]+) is( all | )(free|clear)/i, (msg) ->
     EMPTY = {}
     resource = msg.match[1].trim()
@@ -109,6 +149,7 @@ module.exports = (robot) ->
     else
       msg.send "/me goes looking for a #{resource}"
 
+  # claim a resource
   robot.respond /(?:I can|can [iI]|gimme) (?:have|haz|use|some) ([\w.-]+)\??/i, (msg) ->
     EMPTY = {}
     resource = msg.match[1].trim()
@@ -132,6 +173,7 @@ module.exports = (robot) ->
       silly_things = ["the barn", "the kumquat", "that wookie", "the star port", "the dinghy", "your marbles", "the prisoner", "the llama massage booth", "the... I don't know, you silly human.", "the lost boys"]
       msg.send "I don't have a #{resource}. Maybe you should look out back by #{msg.random silly_things}?"
 
+  # claim dibs on resource
   robot.respond /(?:I call dibs|dibs|shotgun) on ([\w.-]+)\??/i, (msg) ->
     EMPTY = {}
     resource = msg.match[1].trim()
@@ -154,6 +196,7 @@ module.exports = (robot) ->
       silly_things = ["tabanus nippontucki", 'heerz tooya', 'heerz lukenatcha', 'verae peculya', 'greasy spoon', 'troglodyte', 'furry faced hobbit', 'smiley faced fool', 'faulty flatulent feline friend', 'sweet little buttercup', 'bag of mostly watter']
       msg.send "You can't call dibs on #{resource} you silly little #{msg.random silly_things}"
 
+  # remove from dibs queue
   robot.hear /(?:Remove|Delete) me from queue on ([\w.-]+)\??/i, (msg) ->
     EMPTY = {}
     resource = msg.match[1].trim()
@@ -170,6 +213,7 @@ module.exports = (robot) ->
     else
       msg.send "#{resource}? We don't have no stinking #{resource}."
 
+  # clear dibs queue
   robot.hear /Clear the queue on ([\w.-]+)\??/i, (msg) ->
     EMPTY = {}
     resource = msg.match[1].trim()
@@ -183,6 +227,9 @@ module.exports = (robot) ->
     else
       msg.send "#{resource}? We don't have no stinking #{resource}."
 
+  ####################### RESOURCES: CREATE/DESTROY/LIST ############################
+
+  # robot resource creation commands
   robot.respond /(?:give me|create)(?: a)?(?: new)? resource ([\w.-]+)$/i, (msg) ->
     resource = msg.match[1]
     if appendResource robot.brain, resource
@@ -190,6 +237,7 @@ module.exports = (robot) ->
     else
       msg.send "Meh. Seen it before"
 
+  # robot resource destruction commands
   robot.respond /(?:destroy|blow away|get rid of)(?: the)? resource ([\w.-]+)$/i, (msg) ->
     resource = msg.match[1]
     if removeResource robot.brain, resource
@@ -197,3 +245,56 @@ module.exports = (robot) ->
       msg.send "Muahahahaha (boom) (boom) (awyeah)"
     else
       msg.send "WAT? (wat)"
+
+  # lists resources
+  robot.hear /list resources/i, (msg) ->
+    resourceStatuses = []
+    for own resource, active of robot.brain.data.resources
+      owner = getResourceOwner(robot.brain.data.users, resource)
+      if owner
+        resourceStatuses.push "#{owner.name} has #{resource}"
+      else
+        resourceStatuses.push "#{resource} is free"
+    msg.send resourceStatuses.join(", ")
+
+  ####################### WATCHES FOR REPO/BRANCH DEPLOYS  ############################
+
+  # robot repo deploy watch commands
+  robot.respond /watch for (\w+) deploys (to|on) (.+)/i, (msg) ->
+    repo = msg.match[1]
+    resources = msg.match[3].split(",")
+    for resource in resources
+      resource = resource.trim()
+      if associateRepo robot.brain, resource, repo
+        msg.send "Well then, I'll be watching for #{repo} deploys #{msg.match[2]} #{resource}"
+      else
+        msg.send "Weird... I don't know about a #{resource}"
+
+  # robot repo deploy ignore watch commands
+  robot.respond /ignore (\w+) deploys (to|on) (.+)/i, (msg) ->
+    repo = msg.match[1]
+    resources = msg.match[3].split(",")
+    for resource in resources
+      resource = resource.trim()
+      if dissociateRepo robot.brain, resource, repo
+        msg.send "Alright, consider #{repo} dead to #{resource}"
+      else
+        msg.send "To be honest, I don't think #{resource} ever cared about #{repo} to begin with!"
+
+  # listen for deploys of a watched repo to a given resource
+  robot.hear /(.+) finished deploying (\w+)\/([A-Za-z0-9_-]+) to (\w+)\./i, (msg) ->
+    branch = findResourceRepoBranch robot.brain, msg.match[4], msg.match[2]
+    if branch
+      branch.deployer = msg.match[1]
+      branch.branch = msg.match[3]
+
+  # inquire what branches are on a given resource
+  robot.hear /(?:what branch is|what branches are) on ([\w.-]+)?/i, (msg) ->
+    resource = msg.match[1].trim()
+    if robot.brain.data.resources[resource]
+      resourceBranches = getResourceBranches robot.brain, resource
+      for branch in resourceBranches
+        if branch.branch
+          msg.send "#{branch.repo}/#{branch.branch} is on #{resource} (deployed by #{branch.deployer})"
+    else
+      msg.send "/me didn't know it was supposed to be watching #{resource} deploys"
