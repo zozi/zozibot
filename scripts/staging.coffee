@@ -308,7 +308,7 @@ module.exports = (robot) ->
       msg.send "/me didn't know it was supposed to be watching deploys to #{resource}"
 
   # list all deployed branches
-  robot.hear /list deployed ([A-Za-z0-9_-]+)?\s?branches/i, (msg) ->
+  robot.hear /list deployed ([A-Za-z0-9_-]+) branches/i, (msg) ->
     for resource of robot.brain.data.resources
       branches = getResourceBranches robot.brain, resource
       if branches and branches.length
