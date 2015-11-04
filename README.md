@@ -111,7 +111,7 @@ Sometimes Ricbot gets sad and leaves the room. To get it to come back you can ru
 
 1. `ssh ocean-zb1`
 2. `cd ~/current`
-3. `bin/daemon.sh start`
+3. `bin/daemon.hipchat.sh start && bin/daemon.slack.sh start`
 
 More info on deploying hubot in a windows environement can be found at
  [deploying hubot onto UNIX][deploy-unix] wiki page.

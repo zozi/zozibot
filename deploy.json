@@ -15,8 +15,11 @@
     "npm cache clean",
     "npm install",
     "npm test",
-    "ln -nfs ~/shared/bin/.hubotrc bin/.hubotrc",
-    "ln -nfs ~/shared/bin/daemon.sh bin/daemon.sh"
+    "ln -nfs ~/shared/bin/.hubotrc.hipchat bin/.hubotrc.hipchat",
+    "ln -nfs ~/shared/bin/daemon.hipchat.sh bin/daemon.hipchat.sh",
+
+    "ln -nfs ~/shared/bin/.hubotrc.slack bin/.hubotrc.slack",
+    "ln -nfs ~/shared/bin/daemon.slack.sh bin/daemon.slack.sh"
   ],
-  "run_cmd": "bin/daemon.sh restart"
+  "run_cmd": "bin/daemon.hipchat.sh restart && bin/daemon.slack.sh restart"
 }
