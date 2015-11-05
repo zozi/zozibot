@@ -286,12 +286,13 @@ module.exports = (robot) ->
         msg.send "To be honest, I don't think #{resource} ever cared about #{repo} to begin with!"
 
   # listen for deploys of a watched repo to a given resource
-  robot.hear /(.+) finished deploying (\w+)\/([A-Za-z0-9_-]+) (?:\(.+\)\s)?to (\w+).*/i, (msg) ->
-    branch = findResourceRepoBranch robot.brain, msg.match[4], msg.match[2]
+  robot.hear /(.+) finished deploying (\w+)\/([A-Za-z0-9_-]+) (?:\((.+)\)\s)?to (?:(?:\W+)?(\w+)(?:\W+)?).*/i, (msg) ->
+    branch = findResourceRepoBranch robot.brain, msg.match[5], msg.match[2]
     if branch
       branch.deployer = msg.match[1]
-      branch.timestamp = moment().tz('US/Pacific').format('ddd MMM D YYYY h:mmA z')
+      branch.timestamp = moment().tz('US/Pacific').format('h:mmA on YYYY/MM/DD')
       branch.branch = msg.match[3]
+      branch.commit = msg.match[4]
 
   # inquire what branches are on a given resource
   robot.hear /(?:what branch is|what branches are) on ([\w.-]+)?/i, (msg) ->
@@ -301,7 +302,11 @@ module.exports = (robot) ->
       if resourceBranches and resourceBranches.length
         for branch in resourceBranches
           if branch.branch
-            msg.send "#{branch.repo}/#{branch.branch} is on #{resource} (deployed by #{branch.deployer} at #{branch.timestamp})"
+            message = "#{branch.repo}/#{branch.branch}"
+            if branch.commit
+              message = message + " (#{branch.commit})"
+            message = message + " is on #{resource} (deployed by #{branch.deployer} at #{branch.timestamp})"
+            msg.send message
       else
         msg.send "/me doesn't know of any branches deployed to #{resource}"
     else
@@ -316,4 +321,8 @@ module.exports = (robot) ->
           if msg.match[1] and msg.match[1].trim() isnt branch.repo
             continue
           if branch.branch
-            msg.send "#{branch.repo}/#{branch.branch} is on #{resource} (deployed by #{branch.deployer} at #{branch.timestamp})"
+            message = "#{branch.repo}/#{branch.branch}"
+            if branch.commit
+              message = message + " (#{branch.commit})"
+            message = message + " is on #{resource} (deployed by #{branch.deployer} at #{branch.timestamp})"
+            msg.send message
