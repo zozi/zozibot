@@ -120,6 +120,17 @@ module.exports = (robot) ->
     else
       false
 
+  replaceMention = (text, user) ->
+    replacement = "";
+    if user.mention_name
+      replacement = "@#{user.mention_name}"
+    else if user.id
+      replacement = "<@#{user.id}>"
+    else
+      replacement = "@#{user.name}"
+
+    return text.replace("#MENTION#", replacement)
+
   ####################### RESOURCE CLAIMING ############################
 
   # inquire who is using a resource
@@ -128,7 +139,7 @@ module.exports = (robot) ->
     if robot.brain.data.resources[resource]
       resourceOwner = getResourceOwner(robot.brain.data.users, resource)
       if resourceOwner
-        msg.send "#{resourceOwner.name} (@#{resourceOwner.mention_name}) has #{resource}"
+        msg.send replaceMention("#MENTION# has #{resource}", resourceOwner)
       else
         msg.send "No one has told me they have #{resource}."
       resourceBackup = getResourceBackup(robot.brain.data.users, resource)
@@ -147,7 +158,7 @@ module.exports = (robot) ->
       if resourceBackup isnt EMPTY
         clearResourceBackup(robot.brain.data, resource)
         setResourceOwner(robot.brain.data, resource, resourceBackup.name)
-        msg.send "ok @#{resourceBackup.mention_name} now has #{resource}"
+        msg.send replaceMention("ok #MENTION# now has #{resource}", resourceOwner);
       else
         msg.send "okay #{resource} is clear."
     else
@@ -164,7 +175,7 @@ module.exports = (robot) ->
           msg.send "You already have it my little pumpkin pie."
         else
           friendly_things = ["the lovely", "my sweet little", "my darling", "the fabulous", "the amazing"]
-          msg.send "Sorry #{msg.random friendly_things} #{stagingOwner.name} has #{resource}. (@#{stagingOwner.mention_name})"
+          msg.send replaceMention("Sorry #{msg.random friendly_things} #MENTION# has #{resource}", stagingOwner);
           resourceBackup = getResourceBackup(robot.brain.data.users, resource) || EMPTY
           if resourceBackup isnt EMPTY
             msg.send "And #{resourceBackup.name} has dibs."
