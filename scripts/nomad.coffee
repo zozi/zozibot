@@ -3,28 +3,29 @@
 #
 #
 
+scripts = process.env.HUBOT_NOMAD_HOME or "/Users/tauasa/scripts/nomad-"
 spawn = require('child_process').spawn
 
 module.exports = (robot) ->
 
-	execute = (cmd, msg) ->
-		path = "/Users/tauasa/scripts/nomad-" + cmd + ".sh"
+	execute = (cmd, res) ->
+		path = scripts + cmd + ".sh"
 		child = spawn(path)
 
 		child.stdout.on 'data', ( data ) -> 
-      		msg.send "#{ data }"
+      		res.send "#{ data }"
 
       	child.stderr.on 'data', ( data ) -> 
-      		msg.send "Barf: #{ data }"
+      		res.send "Barf: #{ data }"
 
     #
     # proess commands
     #
 
-	robot.hear /(?:nomad1)/i, (msg) ->
-		execute('test', msg)
+	robot.hear /(?:nomad1)/i, (res) ->
+		execute('test', res)
 
-	robot.hear /(?:nomad2)/i, (msg) ->
-		execute('time', msg)
+	robot.hear /(?:nomad2)/i, (res) ->
+		execute('time', res)
 
 
